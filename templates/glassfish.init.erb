@@ -1,6 +1,6 @@
 #!/bin/bash
 # chkconfig: 2345 64 36
-# description: GlassFish is a Java Application Server.
+# description: GlassFish is a Java Application Server for the <%= gfdomain %> domain.
 # processname: glassfish
 # pidfile: /var/run/glassfish.pid
 
@@ -10,12 +10,12 @@
 RETVAL=0
 GLASSFISH_BIN="/opt/glassfish/bin"
 GLASSFISH_USER="glassfish"
-GLASSFISH_LOCK="/var/lock/subsys/glassfish"
-GLASSFISH_PID="/var/run/glassfish.pid"
+GLASSFISH_LOCK="/var/lock/subsys/glassfish-<%= gfdomain %>"
+GLASSFISH_PID="/var/run/glassfish-<%= gfdomain %>.pid"
 
 start() {
     echo -n $"Starting Glassfish: "
-    daemon --user $GLASSFISH_USER --pidfile $GLASSFISH_PID "$GLASSFISH_BIN/asadmin start-domain domain1 >/dev/null"
+    daemon --user $GLASSFISH_USER --pidfile $GLASSFISH_PID "$GLASSFISH_BIN/asadmin start-domain <%= gfdomain %> >/dev/null"
     RETVAL=$?
     PID=$(pgrep -u $GLASSFISH_USER java)
     if [ $RETVAL -eq 0 ]; then

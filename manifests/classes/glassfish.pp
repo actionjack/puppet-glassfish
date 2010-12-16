@@ -52,6 +52,18 @@ class glassfish {
     include glassfish::install, 
 	    glassfish::config, 
 	    glassfish::service
+
+    include concat::setup
+
+    concat{"/opt/glassfish/.aspass":
+       notify => Service["glassfish"],
+    }
+
+    concat::fragment{"glassfish_asadmin_passwd_file":
+       target  => "/opt/glassfish/.aspass",
+       content => template("glassfish/asadminpasswd.erb"),
+       order   => 01,
+    }
 }
 
 class glassfish::disable {
@@ -67,3 +79,11 @@ class glassfish::monitor {
 class glassfish::backup {
 #noop not in use at the moment
 }
+
+define glassfish::setting($value) {
+    concat::fragment{"glassfish_asadmin_passwd_${name}": 
+       target => "/opt/glassfish/.aspass",
+       content => "${name} = ${value}\n",
+    }
+}
+
